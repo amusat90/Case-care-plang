@@ -1,7 +1,8 @@
+const morgan = require('morgan');
 const express = require('express');
 const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
 const passport = require('passport');
+const bodyParser = require('body-parser');
 
 const users = require('./routes/api/users');
 
@@ -22,6 +23,7 @@ mongoose.connect(db, {
 
 /** Passport middleware*/
 app.use(passport.initialize());
+app.use(morgan('tiny'));
 
 /** Passport config */
 require('./config/passport')(passport);
