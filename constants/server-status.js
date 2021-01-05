@@ -1,0 +1,12 @@
+const SERVER_STATUS = {
+    OK: 200,
+    BAD_REQUEST: 400,
+    UNAUTHORISED: 401,
+    FORBIDDEN: 403,
+    NOT_FOUND_ERR: 404,
+    SERVER_ERROR: 500
+};
+
+module.exports = {
+    SERVER_STATUS
+};
