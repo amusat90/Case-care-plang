@@ -11,7 +11,7 @@ const {
 
 
 module.exports = function validateRegisterInput(data) {
-    const {name, email, password, passwordConfirmation} = data;
+    const {name = '', email = '', password = '', passwordConfirmation = ''} = data;
     const validators = [
         userNameLength(name),
         userNameRequired(name),

@@ -16,6 +16,7 @@ const MESSAGES = {
     PASSWORD_IS_REQUIRED: 'Password field is required',
     PASSWORD_IS_INCORRECT: 'Password is incorrect',
     PASSWORD_MISSMATCH: 'Passwords must match',
+    SIMPLE_CONNECTION_ERROR: 'Connection error',
     USERNAME_LENGTH: `Name must be between ${minUserNameLength} and ${maxUserNameLength} characters`,
     USER_LOCKED: 'User is locked',
     USERNAME_IS_REQUIRED: 'Username is required',

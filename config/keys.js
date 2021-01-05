@@ -1,5 +1,5 @@
 module.exports = {
-    mongoURI: 'mongodb://admin:10eje14jUCGKwBYwN@ds125723.mlab.com:25723/romania_loves_camping',
+    mongoURI: 'mongodb+srv://admin:RobertDX339@cluster0.7pw8i.mongodb.net/ROMANIA_LOVES_CAMPING?retryWrites=true&w=majority',
     appSecret: 'secret',
     expireIn: 3600
 };

@@ -41,7 +41,7 @@ const login = async (req, res) => {
     const {email, password} = req.body;
 
     if (!_.isEmpty(errors)) {
-        res.status(SERVER_STATUS.BAD_REQUEST).json(errors)
+        return res.status(SERVER_STATUS.BAD_REQUEST).json(errors)
     }
 
     const user = await User.findOne({email});
