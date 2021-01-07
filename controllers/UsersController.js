@@ -80,7 +80,17 @@ const login = async (req, res) => {
     }
 }
 
+const getList = async (req, res) => {
+    try {
+        const users = await User.find().select(['-password', '-__v']);
+        return res.status(SERVER_STATUS.OK).json(users);
+    } catch (e) {
+        return res.status(SERVER_STATUS.SERVER_ERROR).json(MESSAGES.SIMPLE_CONNECTION_ERROR);
+    }
+}
+
 module.exports = {
+    getList,
     register,
     login
 };
