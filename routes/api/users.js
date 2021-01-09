@@ -9,9 +9,11 @@ router.get('/test', (req, res) => {
     return res.json({msg: 'User API route functional'});
 });
 
-router.get('/list', UsersController.getList);
+router.get('/list', passport.authenticate('jwt', {session: false}), UsersController.list);
 router.post('/register', UsersController.register);
 router.post('/login', UsersController.login);
+router.post('/update', passport.authenticate('jwt', {session: false}), UsersController.updateUser);
+router.post('/delete', passport.authenticate('jwt', {session: false}), UsersController.deleteUsers);
 
 /** @route GET api/users/current
  *  @desc Return current user

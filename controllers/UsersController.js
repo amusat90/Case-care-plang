@@ -62,8 +62,7 @@ const login = async (req, res) => {
         /** User match & Create JWT Payload*/
         const payload = {
             id: user.id,
-            name: user.name,
-            avatar: user.avatar
+            name: user.name
         }
 
         /** Sign token */
@@ -74,23 +73,43 @@ const login = async (req, res) => {
         });
     } else {
         user.loginAttempts = user.loginAttempts + 1;
-        user.save();
         errors.push(MESSAGES.PASSWORD_IS_INCORRECT);
         return res.status(SERVER_STATUS.BAD_REQUEST).json(errors);
     }
 }
 
-const getList = async (req, res) => {
-    try {
-        const users = await User.find().select(['-password', '-__v']);
-        return res.status(SERVER_STATUS.OK).json(users);
-    } catch (e) {
-        return res.status(SERVER_STATUS.SERVER_ERROR).json(MESSAGES.SIMPLE_CONNECTION_ERROR);
-    }
+const list = async (req, res) => {
+    const query = User.find({}).select(['-password', '-__v']);
+    query.exec(function (err, result) {
+        if (err) return res.status(SERVER_STATUS.SERVER_ERROR).json(MESSAGES.SIMPLE_CONNECTION_ERROR);
+        res.status(SERVER_STATUS.OK).json(result);
+    });
+}
+
+const updateUser = async (req, res) => {
+    const {id, description = ''} = req.body;
+    const query = User.findOneAndUpdate({_id: id}, {description: description}, {new: true}).select(['-password', '-__v']);
+    query.exec(function (err, result) {
+        if (err) return res.status(SERVER_STATUS.SERVER_ERROR).json(MESSAGES.SIMPLE_CONNECTION_ERROR);
+        res.status(SERVER_STATUS.OK).json({user: result});
+    });
+}
+
+const deleteUsers = async (req, res) => {
+    const {userIds = []} = req.body;
+    User.deleteMany({_id: {$in: userIds}}, function(err, result) {
+        if (err) {
+            res.status(SERVER_STATUS.SERVER_ERROR).json(MESSAGES.SIMPLE_CONNECTION_ERROR);
+        } else {
+            res.status(SERVER_STATUS.OK).json({users: result});
+        }
+    });
 }
 
 module.exports = {
-    getList,
+    list,
+    updateUser,
+    deleteUsers,
     register,
     login
 };

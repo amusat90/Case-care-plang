@@ -22,7 +22,6 @@
     "body-parser": "^1.18.3",
     "concurrently": "^3.5.1",
     "express": "^4.16.3",
-    "gravatar": "^1.6.0",
     "jsonwebtoken": "^8.2.2",
     "lodash": "^4.17.20",
     "mongoose": "^5.1.3",
