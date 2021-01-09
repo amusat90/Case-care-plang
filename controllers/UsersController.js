@@ -52,7 +52,7 @@ const login = async (req, res) => {
             return res.status(SERVER_STATUS.NOT_FOUND_ERR).json(errors);
         }
 
-        if (user.loginAttempts > maxLoginAttempts) {
+        if (user.isBlocked) {
             errors.push(MESSAGES.USER_LOCKED);
             return res.status(SERVER_STATUS.FORBIDDEN).json(errors);
         }
@@ -77,6 +77,9 @@ const login = async (req, res) => {
                 });
             } else {
                 user.loginAttempts = user.loginAttempts + 1;
+                if (user.loginAttempts > maxLoginAttempts) {
+                    user.isBlocked = true;
+                }
                 errors.push(MESSAGES.PASSWORD_IS_INCORRECT);
                 user.save(function(err, user) {
                     if (err) return res.status(SERVER_STATUS.SERVER_ERROR).JSON(MESSAGES.SIMPLE_CONNECTION_ERROR);
@@ -115,10 +118,28 @@ const remove = async (req, res) => {
     });
 }
 
+const lock = async (req, res) => {
+    const {id, lock} = req.body;
+    if (_.isUndefined(id)) {
+        return res.status(SERVER_STATUS.BAD_REQUEST).json(MESSAGES.USER_ID_MISSING);
+    }
+
+    if (_.isUndefined(lock)) {
+        return res.status(SERVER_STATUS.BAD_REQUEST).json(MESSAGES.USER_LOCK_STATUS_MISSING);
+    }
+
+    const query = User.findOneAndUpdate({_id: id}, {isBlocked: lock}, {new: true}).select(OMITTED_FIELDS);
+    query.exec(function (err, result) {
+        if (err) return res.status(SERVER_STATUS.SERVER_ERROR).json(MESSAGES.SIMPLE_CONNECTION_ERROR);
+        res.status(SERVER_STATUS.OK).json({user: result});
+    });
+}
+
 module.exports = {
     list,
     update,
     remove,
     register,
-    login
+    login,
+    lock
 };

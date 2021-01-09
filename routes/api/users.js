@@ -14,6 +14,7 @@ router.post('/register', UsersController.register);
 router.post('/login', UsersController.login);
 router.post('/update', passport.authenticate('jwt', {session: false}), UsersController.update);
 router.post('/delete', passport.authenticate('jwt', {session: false}), UsersController.remove);
+router.post('/lock', passport.authenticate('jwt', {session: false}), UsersController.lock);
 
 /** @route GET api/users/current
  *  @desc Return current user
