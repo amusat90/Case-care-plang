@@ -68,6 +68,7 @@ const login = async (req, res) => {
                 /** Sign token */
                 jwt.sign(payload, keys.appSecret, {expiresIn: keys.expireIn}, (err, token) => {
                     user.loginAttempts = 0;
+                    user.lastLogin = Date.now();
                     user.save(function(err, user) {
                         if (err) return res.status(SERVER_STATUS.SERVER_ERROR).json(MESSAGES.SIMPLE_CONNECTION_ERROR);
                         res.status(SERVER_STATUS.OK).json({success: true, token: 'Bearer ' + token});
@@ -77,7 +78,10 @@ const login = async (req, res) => {
             } else {
                 user.loginAttempts = user.loginAttempts + 1;
                 errors.push(MESSAGES.PASSWORD_IS_INCORRECT);
-                res.status(SERVER_STATUS.BAD_REQUEST).json(errors);
+                user.save(function(err, user) {
+                    if (err) return res.status(SERVER_STATUS.SERVER_ERROR).JSON(MESSAGES.SIMPLE_CONNECTION_ERROR);
+                    res.status(SERVER_STATUS.BAD_REQUEST).json(errors);
+                });
             }
         });
     });
