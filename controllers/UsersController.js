@@ -13,6 +13,8 @@ const validateRegisterInput = require('../validation/register');
 
 const _ = require('lodash');
 
+const OMITTED_FIELDS = ['-password', '-__v'];
+
 const register = async (req, res) => {
     let errors = validateRegisterInput(req.body);
     const {name, email, password} = req.body;
@@ -44,58 +46,61 @@ const login = async (req, res) => {
         return res.status(SERVER_STATUS.BAD_REQUEST).json(errors)
     }
 
-    const user = await User.findOne({email});
-
-    if (!user) {
-        errors.push(MESSAGES.USER_NOT_FOUND);
-        return res.status(SERVER_STATUS.NOT_FOUND_ERR).json(errors);
-    }
-
-    if (user.loginAttempts > maxLoginAttempts) {
-        errors.push(MESSAGES.USER_LOCKED);
-        return res.status(SERVER_STATUS.FORBIDDEN).json(errors);
-    }
-
-    const isMatch = await bcrypt.compare(password, user.password);
-
-    if (isMatch) {
-        /** User match & Create JWT Payload*/
-        const payload = {
-            id: user.id,
-            name: user.name
+    User.findOne({email}, function (err, user) {
+        if (!user) {
+            errors.push(MESSAGES.USER_NOT_FOUND);
+            return res.status(SERVER_STATUS.NOT_FOUND_ERR).json(errors);
         }
 
-        /** Sign token */
-        jwt.sign(payload, keys.appSecret, {expiresIn: keys.expireIn}, (err, token) => {
-            user.loginAttempts = 0;
-            user.save();
-            return res.status(SERVER_STATUS.OK).json({success: true, token: 'Bearer ' + token})
+        if (user.loginAttempts > maxLoginAttempts) {
+            errors.push(MESSAGES.USER_LOCKED);
+            return res.status(SERVER_STATUS.FORBIDDEN).json(errors);
+        }
+
+        bcrypt.compare(password, user.password).then(match => {
+            if (match) {
+                /** User match & Create JWT Payload*/
+                const payload = {
+                    id: user.id,
+                    name: user.name
+                }
+
+                /** Sign token */
+                jwt.sign(payload, keys.appSecret, {expiresIn: keys.expireIn}, (err, token) => {
+                    user.loginAttempts = 0;
+                    user.save(function(err, user) {
+                        if (err) return res.status(SERVER_STATUS.SERVER_ERROR).json(MESSAGES.SIMPLE_CONNECTION_ERROR);
+                        res.status(SERVER_STATUS.OK).json({success: true, token: 'Bearer ' + token});
+                    });
+
+                });
+            } else {
+                user.loginAttempts = user.loginAttempts + 1;
+                errors.push(MESSAGES.PASSWORD_IS_INCORRECT);
+                res.status(SERVER_STATUS.BAD_REQUEST).json(errors);
+            }
         });
-    } else {
-        user.loginAttempts = user.loginAttempts + 1;
-        errors.push(MESSAGES.PASSWORD_IS_INCORRECT);
-        return res.status(SERVER_STATUS.BAD_REQUEST).json(errors);
-    }
+    });
 }
 
 const list = async (req, res) => {
-    const query = User.find({}).select(['-password', '-__v']);
+    const query = User.find({}).select(OMITTED_FIELDS);
     query.exec(function (err, result) {
         if (err) return res.status(SERVER_STATUS.SERVER_ERROR).json(MESSAGES.SIMPLE_CONNECTION_ERROR);
         res.status(SERVER_STATUS.OK).json(result);
     });
 }
 
-const updateUser = async (req, res) => {
+const update = async (req, res) => {
     const {id, description = ''} = req.body;
-    const query = User.findOneAndUpdate({_id: id}, {description: description}, {new: true}).select(['-password', '-__v']);
+    const query = User.findOneAndUpdate({_id: id}, {description: description}, {new: true}).select(OMITTED_FIELDS);
     query.exec(function (err, result) {
         if (err) return res.status(SERVER_STATUS.SERVER_ERROR).json(MESSAGES.SIMPLE_CONNECTION_ERROR);
         res.status(SERVER_STATUS.OK).json({user: result});
     });
 }
 
-const deleteUsers = async (req, res) => {
+const remove = async (req, res) => {
     const {userIds = []} = req.body;
     User.deleteMany({_id: {$in: userIds}}, function(err, result) {
         if (err) {
@@ -108,8 +113,8 @@ const deleteUsers = async (req, res) => {
 
 module.exports = {
     list,
-    updateUser,
-    deleteUsers,
+    update,
+    remove,
     register,
     login
 };
