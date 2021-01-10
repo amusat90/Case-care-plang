@@ -16,7 +16,7 @@ class Register extends Component {
             errors: {}
         };
 
-        this.onChange = this.onChange.bind(this);
+        // this.onChange = this.onChange.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
     }
 
@@ -26,7 +26,7 @@ class Register extends Component {
         }
     }
 
-    onChange(e) {
+    onChange = (e) => {
         this.setState({ [e.target.name]: e.target.value });
     }
 
@@ -59,7 +59,7 @@ class Register extends Component {
                         <div className="col-md-8 m-auto">
                             <h1 className="display-4 text-center">Sign Up</h1>
                             <p className="lead text-center">
-                                Create your DevConnector account
+                                Join us in making history
                             </p>
                             <form noValidate onSubmit={this.onSubmit}>
                                 <div className="form-group">
@@ -91,10 +91,7 @@ class Register extends Component {
                                     {errors.email && (
                                         <div className="invalid-feedback">{errors.email}</div>
                                     )}
-                                    <small className="form-text text-muted">
-                                        This site uses Gravatar so if you want a profile image, use
-                                        a Gravatar email
-                                    </small>
+                                    
                                 </div>
                                 <div className="form-group">
                                     <input

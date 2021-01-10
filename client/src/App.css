@@ -11,6 +11,15 @@ img {
   margin-bottom: -50px;
 }
 
+.login{
+  position: relative;
+  background: url('./img/mountain.jpg') no-repeat;
+  background-size: cover;
+  height: 100vh;
+  margin-top: -24px;
+  margin-bottom: -50px;
+}
+
 .landing-inner {
   padding-top: 80px;
 }
