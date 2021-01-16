@@ -4,15 +4,16 @@ import {withRouter} from 'react-router-dom';
 import classnames from 'classnames';
 import {connect} from 'react-redux';
 import {registerUser} from "../../actions/authActions";
+import {BACKEND_ACCESSORS} from '../../constants/constants';
 
 class Register extends Component {
     constructor() {
         super();
         this.state = {
-            name: '',
-            email: '',
-            password: '',
-            password2: '',
+            [BACKEND_ACCESSORS.USER_NAME]: '',
+            [BACKEND_ACCESSORS.USER_EMAIL]: '',
+            [BACKEND_ACCESSORS.USER_PASSWORD]: '',
+            [BACKEND_ACCESSORS.USER_PASSWORD_CONFIRMATION]: '',
             errors: {}
         };
 
@@ -34,10 +35,10 @@ class Register extends Component {
         e.preventDefault();
 
         const newUser = {
-            name: this.state.name,
-            email: this.state.email,
-            password: this.state.password,
-            password2: this.state.password2
+            [BACKEND_ACCESSORS.USER_NAME]: this.state[BACKEND_ACCESSORS.USER_NAME],
+            [BACKEND_ACCESSORS.USER_EMAIL]: this.state[BACKEND_ACCESSORS.USER_EMAIL],
+            [BACKEND_ACCESSORS.USER_PASSWORD]: this.state[BACKEND_ACCESSORS.USER_PASSWORD],
+            [BACKEND_ACCESSORS.USER_PASSWORD_CONFIRMATION]: this.state[BACKEND_ACCESSORS.USER_PASSWORD_CONFIRMATION]
         };
 
         this.props.registerUser(newUser, this.props.history);
@@ -112,15 +113,15 @@ class Register extends Component {
                                     <input
                                         type="password"
                                         className={classnames('form-control form-control-lg', {
-                                            'is-invalid': errors.password2
+                                            'is-invalid': errors.passwordConfirmation
                                         })}
                                         placeholder="Confirm Password"
-                                        name="password2"
-                                        value={this.state.password2}
+                                        name="passwordConfirmation"
+                                        value={this.state.passwordConfirmation}
                                         onChange={this.onChange}
                                     />
-                                    {errors.password2 && (
-                                        <div className="invalid-feedback">{errors.password2}</div>
+                                    {errors.passwordConfirmation && (
+                                        <div className="invalid-feedback">{errors.passwordConfirmation}</div>
                                     )}
                                 </div>
                                 <input type="submit" className="btn btn-info btn-block mt-4" />

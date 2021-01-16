@@ -1,15 +1,18 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+
 import {connect} from 'react-redux';
+
 import {loginUser} from '../../actions/authActions';
 import classnames from 'classnames';
+import {BACKEND_ACCESSORS} from '../../constants/constants';
 
 class Login extends Component {
     constructor() {
         super();
         this.state = {
-            email: '',
-            password: '',
+            [BACKEND_ACCESSORS.USER_EMAIL]: '',
+            [BACKEND_ACCESSORS.USER_PASSWORD]: '',
             errors: {}
         };
 

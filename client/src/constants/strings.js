@@ -1,8 +1,8 @@
 const SUBSTITUTION = /{([^{]+)}/g;
 
 const dictionary = {
-    appTitle: 'Romania Loves Camping',
-    landingPageSubtitle: 'Welcome to Romania Loves Camping'
+    appTitle: 'Case care plang',
+    landingPageSubtitle: 'Welcome to Case care plang'
 };
 
 function uncamelize(str, separator) {
