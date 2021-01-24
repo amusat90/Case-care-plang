@@ -23,11 +23,17 @@ class Landing extends Component {
                         <div className="row">
                             <div className="col-md-12 text-center">
                                 <h1 className="display-3 mb-4">{LABELS.appTitle}</h1>
-                                <p className="lead">
+                                <h2 className="lead">
                                     {' '}
                                     {LABELS.landingPageSubtitle}
-                                </p>
+                                </h2>
                                 <hr/>
+                                <p className="display-4 mb-4">
+                                "Some listed buildings end up losing their economic value due to the neglect of their owners. Our NGO aims to stop this from happening by drawing attention to those properties and their architectural identity."
+                                </p>
+                                <p class="text-right">
+                                    Marcus Aurelius, head of NGO
+                                </p>
                                 <Link className="btn btn-lg btn-info mr-2" to ="/register">Sign Up</Link>
                                 <Link className="btn btn-lg btn-light" to ="/login">Login</Link>
                             </div>

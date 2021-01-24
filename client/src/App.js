@@ -11,6 +11,7 @@ import Footer from './components/layout/Footer';
 import Register from './components/auth/Register';
 import Login from './components/auth/Login';
 import Dashboard from './components/dashboard/Dashboard';
+import About from './components/About';
 
 import './App.css';
 
@@ -38,6 +39,7 @@ function App() {
                   <Navbar/>
                   <Route exact path="/" component={Landing}/>
                   <div className="container">
+                      <Route exact path="/about" component={About}/>
                       <Route exact path="/dashboard" component={Dashboard} />
                       <Route exact path="/register" component={Register}/>
                       <Route exact path="/login" component={Login}/>
